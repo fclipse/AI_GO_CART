@@ -3,10 +3,7 @@ import tensorflow.keras
 import numpy as np
 import serial
 
-ser = serial.Serial(
-    port = '',
-    baudrate = '9600',
-)
+ser = serial.Serial(port = 'COM20', baudrate = 9600)
 
 ## 이미지 전처리
 def preprocessing(frame):
@@ -23,7 +20,7 @@ def preprocessing(frame):
     return frame_reshaped
 
 ## 학습된 모델 불러오기
-model_filename = 'res/dont_sleep/converted_keras/keras_model.h5'
+model_filename = 'keras_model.h5'
 model = tensorflow.keras.models.load_model(model_filename)
 
 # 카메라 캡쳐 객체, 0=내장 카메라
@@ -33,7 +30,6 @@ capture = cv2.VideoCapture(0)
 capture.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
 capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
 
-sleep_cnt = 1 # 30초간 "졸림" 상태를 확인하기 위한 변수
 while True:
     ret, frame = capture.read()
     
@@ -78,6 +74,7 @@ while True:
     elif max_index == 5:
         # 6번째 인덱스
         result = 'd'
+    # 출력
     result = result.encode()
     ser.write(result)
     print(result, ': ', prediction[0, max_index], '%')
