@@ -54,7 +54,7 @@ while True:
     #print(prediction) # [[0.00533728 0.99466264]]
     
     # 예측 결과 중 가장 높은 결과 선택
-    max_index = max(prediction[0])
+    max_index = prediction[0].index(max(prediction[0]))
     result = 'S'
     arr = ['W', 'S', 'A', 'D', 'a', 'd']
     result = arr[max_index]
