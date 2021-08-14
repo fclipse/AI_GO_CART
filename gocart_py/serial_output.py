@@ -56,24 +56,9 @@ while True:
     # 예측 결과 중 가장 높은 결과 선택
     max_index = max(prediction[0])
     result = 'S'
-    if max_index == 0:
-        # 1번째 인덱스
-        result = 'W'
-    elif max_index == 1:
-        # 2번째 인덱스
-        result = 'S'
-    elif max_index == 2:
-        # 3번째 인덱스
-        result = 'A'
-    elif max_index == 3:
-        # 4번째 인덱스
-        result = 'D'
-    elif max_index == 4:
-        # 5번째 인덱스
-        result = 'a'
-    elif max_index == 5:
-        # 6번째 인덱스
-        result = 'd'
+    arr = ['W', 'S', 'A', 'D', 'a', 'd']
+    result = arr[max_index]
+    
     # 출력
     result = result.encode()
     ser.write(result)
