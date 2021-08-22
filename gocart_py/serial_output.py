@@ -84,6 +84,8 @@ while True:
     
         # 출력
             result = result.encode()
+            #인코딩 방식 새로 추가
+            result = (str(arr[max_index])+'\n').encode("utf-8")
             ser.write(result)
             print(result, ': ', prediction[0, max_index]*100, '%')
             
