@@ -51,12 +51,6 @@ char SetMode = 'q';
 char Mode = 'q';
 char lol = 'a';
 // 입력 문자, 입력 문자 백업
-/*
-char cmd = 'w';
-//invalid conversion 떠서 오류남
-char cmdM = 's';
-char ble_char = 'm';
-*/
 //----------------------------------------------변수들
 void forward(){
   //드라이브 모터가 앞으로 회전하도록 신호부여
@@ -82,7 +76,6 @@ void forward(){
       left();
     }
   }
-  //Serial.println("forward");
 }
 
 void backward(){
@@ -96,7 +89,6 @@ void backward(){
       delay(100);
     }
   }
-  //Serial.println("backward");
 }
 
 void left() {
@@ -120,29 +112,6 @@ void left() {
   }
   //Serial.println(rotatePos);
 }
-/*
-void slight_left() {
-  // 조향 모터가 '반시계방향'으로 회전하도록 신호부여
-  digitalWrite(dirPinLR,HIGH); 
-  
-  if (rotatePos > rotateLeftLimit) {
-    // 1000마이크로초 주기로 모터 축이 1.5회전하는 코드
-    // 1:50 기어박스 내장되어 있으므로, 모터 1회전에 바퀴 7.2도 회전함
-    // 따라서, 모터가 1.5회전하면 바퀴가 10.8도 회전함
-    for(int x = 0; x < STEPS_PER_REV*rotate_S; x++) {//4번, right보다 1많게
-      digitalWrite(enA,HIGH);
-      digitalWrite(stepPin,HIGH);
-      delayMicroseconds(500);
-      digitalWrite(stepPin,LOW);
-      delayMicroseconds(500); 
-    }
-    rotatePos = rotatePos - 1;
-  } else {
-    rotatePos = rotate_s_LeftLimit;
-  }
-  Serial.println(rotatePos);
-}
-*/
 void right() {
   // 조향 모터가 '시계방향'으로 회전하도록 신호부여
   digitalWrite(dirPinLR,LOW); 
@@ -160,26 +129,6 @@ void right() {
     rotatePos = rotateRightLimit;
   }
 }
-/*
-void slight_right() {
-  // 조향 모터가 '시계방향'으로 회전하도록 신호부여
-  digitalWrite(dirPinLR,LOW); 
-  
-  if (rotatePos < rotateRightLimit) {
-    for(int x = 0; x < STEPS_PER_REV*rotate_S; x++) {
-      digitalWrite(enA,HIGH);
-      digitalWrite(stepPin,HIGH);
-      delayMicroseconds(500);
-      digitalWrite(stepPin,LOW);
-      delayMicroseconds(500); 
-    }
-    rotatePos = rotatePos + 1;
-  } else {
-    rotatePos = rotate_s_RightLimit;
-  }
-  //Serial.println(rotatePos);
-}
-*/
 void motorStop(){
   digitalWrite(PWR,LOW);
   analogWrite(PWM, 0);
@@ -196,6 +145,7 @@ void setSerial(){
 }
 */
 //------------------setMode--------------------
+/*    //구버전 serial input
 void setMode(){
   // 아두이노 메가를 쓸 때는 Serial3를 그대로 사용하고, 아두이노 우노를 쓸 때는 Serial3를 mySerial로 수정해주세요. 
   // 아두이노 메가를 쓸 때는 SW6 스위치를 3번쪽으로 옮기고, 아두이노 우노를 쓸 때는 SW6 스위치를 1번쪽으로 옮겨주세요.
@@ -212,6 +162,7 @@ void setMode(){
      }
   }
 }
+*/
 //modeState 변경, 자율주행/수동조종 제어, 28번핀 사용
 void BUTTON1(){
   int var = digitalRead(but1);
@@ -254,14 +205,9 @@ void setup() {
 //---------------------------------------------함수선언
 
 void loop() {
-  // modeState가 0이면 앱제어 모드로 수행
-  setMode();
-  //setMode -> modeState 지정
-  //modeState가 1이면 수동운전 모드로 수행 : q
-  
   while(modeState == 1) {
-    setMode();
-    //BUTTON1();
+    //setMode();
+    BUTTON1();
     // 전진, 후진 스위치 값 저장
     pedalFVal = digitalRead(pedalF);
     pedalBVal = digitalRead(pedalB);
@@ -271,15 +217,6 @@ void loop() {
     pedalVal = map(pedalVal, 230, 850, 0, 255);
     pedalVal = constrain(pedalVal, 0, 255);
 
-    // 페달 값 변화 시리얼 모니터 링
-    /*페달 값 출력
-    Serial.print(pedalFVal);
-    Serial.print("  "); 
-    Serial.print(pedalBVal);
-    Serial.print("  ");
-    Serial.print(pedalVal);
-    Serial.print("  ");
-    */
     // 페달 신호가 0이면 브레이킹
     if (pedalVal == 0) {
       digitalWrite(PWR,LOW);   
@@ -304,9 +241,8 @@ void loop() {
   }
   //modestate가 0이면 자동운전 모드로 수행 : e
   while(modeState == 0){
-    //Serial.println(modeState);
-    setMode();
-    //BUTTON1();
+    //setMode();
+    BUTTON1();
     if(Serial.available()){
       Mode = Serial.read();
     }
@@ -320,6 +256,7 @@ void loop() {
       //반대로 해줘야 제대로 감
       right();
       delay(500);
+      //딜레이 제거 고려 , 0823
     }
     else if(Mode == 'D'){
       //반대로 해줘야 제대로 감    
@@ -338,45 +275,6 @@ void loop() {
       if(velocity > 250)
         velocity = 250;
     }
-    /*
-    switch(Mode){
-      case 'W':
-        forward();
-        break;
-      case 'X':
-        backward();
-        break;
-      case 'D':
-        //반대로 해줘야 제대로 감
-        //motorStop();
-        left();
-        delay(500);
-        //forward();
-        //left();
-        break;
-      case 'A':
-        //motorStop();
-        //반대로 해줘야 제대로 감
-        right();
-        delay(500);
-        //forward();
-        //right();
-        break;
-      case 'S':
-        motorStop();
-        break;
-      case 'o':
-        velocity -= 30;
-        if(velocity < 30)
-          velocity = 30;
-        break;
-      case 'p':
-        velocity += 30;
-        if(velocity > 250)
-          velocity = 250;
-      
-    }
-    */
     Serial.println(rotatePos);
   }
 }
