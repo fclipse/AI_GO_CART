@@ -26,7 +26,7 @@ const int rotate = 1;
 //계속 redeclared 오류남
 const int PWR = 8; // 파워
 const int PWM = 9; // 신호 1
-int velocity = 50;
+int velocity = 30;
 
 // 페달 제어_전진, 후진 스위치 센싱
 int pedalF = 6;
@@ -60,7 +60,7 @@ void forward(){
   if (i != velocity) {
     for (i = 0; i < velocity; i = i + 10) {
       analogWrite(PWM, i);
-      delay(100);
+      delay(50);
     }
   }
   //정렬 코드
@@ -69,12 +69,16 @@ void forward(){
     for (int k = 0; k < j; k++) {
       right();
     }
+    //right();
+    //left();
   } 
   else if (rotateMid < rotatePos) {
     int j = rotatePos - rotateMid;
     for (int k = 0; k < j; k++) {
       left();
     }
+    //left();
+    //right();
   }
 }
 
@@ -130,11 +134,10 @@ void right() {
   }
 }
 void motorStop(){
+  
   digitalWrite(PWR,LOW);
   analogWrite(PWM, 0);
-  delay(100);
-  //Serial.println("motorStop");
-  //cmdM = 's';
+  //delay(100);
 }
 //-----------------setSerial------------------
 /*
@@ -163,9 +166,11 @@ void setMode(){
   }
 }
 */
+int var;
+//var1 = 0;
 //modeState 변경, 자율주행/수동조종 제어, 28번핀 사용
 void BUTTON1(){
-  int var = digitalRead(but1);
+  var = digitalRead(but1);
   if(var - var1 == 1){
     modeState = 1 - modeState;
   }
@@ -200,11 +205,12 @@ void setup() {
   digitalWrite(ground, LOW);
 
   Serial.println("AI Go-Kart is Ready!");
-  Serial3.println("Bluetooth Connection Check");
+  //Serial3.println("Bluetooth Connection Check");
 }
 //---------------------------------------------함수선언
 
 void loop() {
+  
   while(modeState == 1) {
     //setMode();
     BUTTON1();
@@ -255,13 +261,15 @@ void loop() {
     else if(Mode == 'A'){
       //반대로 해줘야 제대로 감
       right();
-      delay(500);
+      right();
+      //delay(500);
       //딜레이 제거 고려 , 0823
     }
     else if(Mode == 'D'){
       //반대로 해줘야 제대로 감    
       left();
-      delay(500);
+      left();
+      //delay(500);
     }
     else if(Mode == 'X')
       backward();
@@ -275,6 +283,6 @@ void loop() {
       if(velocity > 250)
         velocity = 250;
     }
-    Serial.println(rotatePos);
+    //Serial.println(rotatePos);
   }
 }
