@@ -28,8 +28,16 @@ def preprocessing(frame):
     width = frame.shape[1]
     x = height//2 - 112                         #시작x, y 설정
     y = width//2 - 112
-    frame_reshaped = frame[x:x+224, y:y+224]    #Crop
-    frame_reshaped = frame_reshaped.reshape((1,240,240,3))
+    frame = frame[x:x+224, y:y+224]    #Crop
+    
+    size = (224, 224)
+    frame_resized = cv2.resize(frame, size, interpolation=cv2.INTER_AREA)
+    
+    # 이미지 정규화
+    frame_normalized = (frame_resized.astype(np.float32) / 127.0) - 1
+    
+    # 이미지 차원 재조정 - 예측을 위해 reshape 해줍니다.
+    frame_reshaped = frame_normalized.reshape((1, 224, 224, 3))
     return frame_reshaped
 
 while True: # 특정 키를 누를 때까지 무한 반복
