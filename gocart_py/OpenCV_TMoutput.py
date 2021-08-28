@@ -12,7 +12,8 @@ capture = cv2.VideoCapture(1)
 capture.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
 capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
 
-# ser = serial.Serial(port, baudrate = 9600)                    #시리얼 포트 설정
+port = 'COM3'
+ser = serial.Serial(port, baudrate = 9600)                    #시리얼 포트 설정
 
 ## 학습된 모델 불러오기
 model_filename = 'keras_model.h5'
@@ -21,7 +22,6 @@ model = tensorflow.keras.models.load_model(model_filename, compile = False)
 v = 0
 num = 10
 dir_list = [0, 0, 0, 0]
-port = 'COM3'
 data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32)
 
 # 이미지 전처리
@@ -51,7 +51,6 @@ while True: # 특정 키를 누를 때까지 무한 반복
         cv2.imshow("VideoFrame", frame)
         #이미지 전처리
         preprocessed = preprocessing(frame)
-        #print(preprocessed.shape)
         
         # 예측
         prediction = model.predict(preprocessed)
@@ -71,7 +70,7 @@ while True: # 특정 키를 누를 때까지 무한 반복
             serval = (str(arr[max_index])+'\n').encode("utf-8")
 
             # 출력
-            # ser.write(serval)                                     #시리얼 출력
+            ser.write(serval)                                     #시리얼 출력
             print(serval, ': ', prediction[0, max_index]*100, '%')
         else:
             for i in range(4):              #Ilovepython
