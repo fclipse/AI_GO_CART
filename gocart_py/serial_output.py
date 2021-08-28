@@ -7,16 +7,16 @@ import keyboard
 
 ## 이미지 전처리
 def preprocessing(frame):
-    # 높이, 너비 받아옴
-    width = frame.shape[0]
-    height = frame.shape[1]
-
-    # 시작 x, y좌표 설정
-    x = width//2 - 112
-    y = height//2 - 112
-
-    # 중앙에 있는 사진만 잘라옴
-    frame_reshaped = frame[x:x+224, y:y+224]
+    # 사이즈 조정
+    size = (224, 224)
+    frame_resized = cv2.resize(frame, size, interpolation=cv2.INTER_AREA)
+    
+    # 이미지 정규화
+    frame_normalized = (frame_resized.astype(np.float32) / 127.0) - 1
+    
+    # 이미지 차원 재조정 - 예측을 위해 reshape 해줍니다.
+    frame_reshaped = frame_normalized.reshape((1, 224, 224, 3))
+    
     return frame_reshaped
     
 
