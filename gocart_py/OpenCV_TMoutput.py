@@ -12,7 +12,7 @@ capture = cv2.VideoCapture(1)
 capture.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
 capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
 
-port = 'COM3'
+port = 'COM6'
 ser = serial.Serial(port, baudrate = 9600)                    #시리얼 포트 설정
 
 ## 학습된 모델 불러오기
@@ -48,7 +48,7 @@ while True: # 특정 키를 누를 때까지 무한 반복
     if ret == True:
         # 이미지 자르기 및 출력
         frame = image_crop(frame)
-        cv2.imshow("VideoFrame", frame)
+        #cv2.imshow("VideoFrame", frame)
         #이미지 전처리
         preprocessed = preprocessing(frame)
         
@@ -59,7 +59,7 @@ while True: # 특정 키를 누를 때까지 무한 반복
         # 예측 결과 중 가장 높은 결과 선택
         max_index = np.argmax(prediction[0])
         result = 'S'
-        arr = ['W', 'S', 'A', 'D']
+        arr = ['W', 'S', 'A', 'D', 'a', 'd']
         result = arr[max_index]
 
         #num개씩 받는 부분
